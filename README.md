@@ -9,9 +9,9 @@ Three domains/services:
 
 TODO:
 * profile api with id, names, email +
-* save profile image
+* save profile image +
 * read profile +
-* read profile image
+* read profile image +
 * use state store for profile
 * host spa in api image
 * create image thumbnail service

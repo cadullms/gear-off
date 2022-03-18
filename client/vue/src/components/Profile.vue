@@ -4,7 +4,7 @@
       You are [id]:<input v-model="userId" placeholder="1234" /><button
         @click="fetchProfile"
       >
-        Set
+        Load
       </button>
     </p>
     <div class="container">
@@ -100,6 +100,7 @@ export default {
           this.userEmail = profile.email;
           this.userId = profile.id;
           this.userName = profile.name;
+          this.filePreview = profile.imageUrl;
         })
         .catch(function (error) {
           console.error(error.response);
@@ -117,9 +118,9 @@ export default {
           console.error(error.response);
         });
       const formData = new FormData();
-      formData.append("files", this.filePreview);
+      formData.append("files", this.$refs.fileInput.files[0]);
       // TODO: Check out uploading the image directly to the storage account...
-      this.$http.post("Profile/" + this.userId + "/image", formData).then(
+      this.$http.put("Profile/" + this.userId + "/image", formData).then(
         (response) => {
           console.log(response);
           this.$refs.errorText.innerText = "";
