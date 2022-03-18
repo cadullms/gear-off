@@ -8,8 +8,12 @@ Three domains/services:
 * Gear
 
 TODO:
-* profile api with id, names, email
+* profile api with id, names, email +
 * save profile image
-* read profile
+* read profile +
 * read profile image
+* use state store for profile
 * host spa in api image
+* create image thumbnail service
+* setup with blob storage and event grid
+* setup in container app

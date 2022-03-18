@@ -11,25 +11,29 @@
       <form>
         <div class="form-group">
           <label for="filePreview">Profile Image:</label>
-        <div
-          class="form-control previewBlock"
-          @click="chooseFile"
-          :style="{
-            'background-image': `${filePreview ? 'url(' + filePreview + ')' : 'url(https://upload.wikimedia.org/wikipedia/commons/a/a1/Missing_image_icon_with_camera_and_upload_arrow.svg)'}`,
-          }"
-          id="filePreview"
-        ></div>
+          <div
+            class="form-control previewBlock"
+            @click="chooseFile"
+            :style="{
+              'background-image': `${
+                filePreview
+                  ? 'url(' + filePreview + ')'
+                  : 'url(https://upload.wikimedia.org/wikipedia/commons/a/a1/Missing_image_icon_with_camera_and_upload_arrow.svg)'
+              }`,
+            }"
+            id="filePreview"
+          ></div>
 
-        <div hidden>
-          <input
-            class="form-control form-control-lg"
-            ref="fileInput"
-            type="file"
-            id="formFileLg"
-            @input="selectImgFile"
-            accept=".jpg, .jpeg, .png"
-          />
-        </div>
+          <div hidden>
+            <input
+              class="form-control form-control-lg"
+              ref="fileInput"
+              type="file"
+              id="formFileLg"
+              @input="selectImgFile"
+              accept=".jpg, .jpeg, .png"
+            />
+          </div>
         </div>
         <div class="form-group">
           <label for="userEmail">Email:</label>
@@ -89,7 +93,7 @@ export default {
   methods: {
     fetchProfile() {
       this.$http
-        .get("profile/" + this.userId)
+        .get("Profile/" + this.userId)
         .then((response) => {
           let profile = response.data;
           this.userNickname = profile.nickname;
@@ -102,9 +106,20 @@ export default {
         });
     },
     onSave() {
+      this.$http
+        .put("Profile/" + this.userId, {
+          id: this.userId,
+          name: this.userName,
+          nickname: this.userNickname,
+          email: this.userEmail,
+        })
+        .catch(function (error) {
+          console.error(error.response);
+        });
       const formData = new FormData();
       formData.append("files", this.filePreview);
-      this.$http.post("profile/" + this.userId + "/image", formData).then(
+      // TODO: Check out uploading the image directly to the storage account...
+      this.$http.post("Profile/" + this.userId + "/image", formData).then(
         (response) => {
           console.log(response);
           this.$refs.errorText.innerText = "";
