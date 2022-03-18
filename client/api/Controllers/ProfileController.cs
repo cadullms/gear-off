@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Services;
+using Dapr.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,8 @@ namespace api.Controllers
         private readonly IConfiguration _configuration;
         private readonly IImageUploader _imageUploader;
 
+        private const string DAPR_STORE_NAME = "statestore";
+
         public ProfileController(ILogger<ProfileController> logger, IConfiguration configuration, IImageUploader imageUploader)
         {
             _logger = logger;
@@ -26,21 +29,21 @@ namespace api.Controllers
             _imageUploader = imageUploader;
         }
 
-        private static readonly Dictionary<int, Profile> profiles = new Dictionary<int, Profile>();
-
         [HttpGet("{id}")]
-        public Profile Get(int id)
+        public async Task<Profile> Get(int id)
         {
+            using var client = new DaprClientBuilder().Build();
             Profile profile = null;
-            profiles.TryGetValue(id, out profile);
+            profile = await client.GetStateAsync<Profile>(DAPR_STORE_NAME, id.ToString());
             return profile;
         }
 
         [HttpPut("{id}")]
-        public Profile Put(int id, Profile profile)
+        public async Task<Profile> Put(int id, Profile profile)
         {
             profile.Id = id;
-            profiles[id] = profile;
+            using var client = new DaprClientBuilder().Build();
+            await client.SaveStateAsync<Profile>(DAPR_STORE_NAME, id.ToString(), profile);
             return profile;
         }
 
@@ -69,12 +72,12 @@ namespace api.Controllers
             if (imageUrl != null)
             {
                 _logger.LogInformation($"Successfully processed image {filePath} to {imageUrl}.");
-                Profile profile = null;
-                profiles.TryGetValue(id, out profile);
+                Profile profile = Get(id).Result;
                 if (profile != null)
                 {
                     profile.ImageUrl = imageUrl;
                 }
+                Put(id, profile).Wait();
                 return Ok();
             }
             else
