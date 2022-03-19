@@ -1,0 +1,14 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: grid-queue-message
+spec:
+  type: bindings.azure.servicebusqueues
+  version: v1
+  metadata:
+  - name: connectionString
+    value: "Endpoint=sb://gearoffsb.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=U08Uk8yttY5k7jDDCTLMGPZRehC2lHPZyiSuwOUdYFc="
+  - name: queueName
+    value: image-actions
+  - name: ttlInSeconds
+    value: 60

@@ -1,0 +1,1 @@
+dapr run --app-id gear-off-thumbnailer --app-port 5050 dotnet run --components-path ./components

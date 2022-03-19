@@ -1,0 +1,1 @@
+dapr run --app-id gear-off-api --app-port 5000 dotnet run
