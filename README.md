@@ -12,8 +12,9 @@ TODO:
 * save profile image +
 * read profile +
 * read profile image +
-* use state store for profile
+* use state store for profile +
+* create image thumbnail service +
+* setup with blob storage and event grid +
 * host spa in api image
-* create image thumbnail service
-* setup with blob storage and event grid
 * setup in container app
+* setup in aks
