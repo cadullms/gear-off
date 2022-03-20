@@ -5,11 +5,11 @@ param
     $NamePrefix="gearoff"
 )
 
-az group create --name $ResourceGroup --location $Location | Out-Null
+az group create --name $ResourceGroup --location $Location --tags purpose=demo | Out-Null
 az deployment group create `
   --name "infra$([DateTime]::Now.Ticks)"`
   --resource-group "$ResourceGroup" `
-  --template-file $PSScriptRoot/infra.bicep `
+  --template-file $PSScriptRoot/container-apps.bicep `
   --parameters `
       namePrefix="$NamePrefix" `
       | Out-Null
