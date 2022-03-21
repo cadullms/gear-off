@@ -16,14 +16,12 @@ namespace api.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly ILogger<ProfileController> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IImageUploader _imageUploader;
         private readonly IProfileRepository _profileRepository;
 
-        public ProfileController(ILogger<ProfileController> logger, IConfiguration configuration, IImageUploader imageUploader, IProfileRepository profileRepository)
+        public ProfileController(ILogger<ProfileController> logger, IImageUploader imageUploader, IProfileRepository profileRepository)
         {
             _logger = logger;
-            _configuration = configuration;
             _imageUploader = imageUploader;
             _profileRepository = profileRepository;
         }
