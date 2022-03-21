@@ -5,7 +5,6 @@ metadata:
     run: thumbnailer
   name: thumbnailer
 spec:
-  replicas: 1
   selector:
     matchLabels:
       run: thumbnailer
@@ -35,6 +34,11 @@ spec:
             secretKeyRef:
               name: thumbnailer-secrets
               key: image-thumbnails-storage-connection-string
+        - name: serviceBusImageQueueConnectionString #needed for KEDA scaled object (See below)
+          valueFrom:
+            secretKeyRef:
+              name: thumbnailer-secrets
+              key: service-bus-image-queue-connection-string
 ---
 apiVersion: dapr.io/v1alpha1
 kind: Component
@@ -60,6 +64,7 @@ metadata:
 data:
   image-thumbnails-storage-connection-string: {{ .Values.imageStorageConnectionString | b64enc }}
   service-bus-connection-string: {{ .Values.serviceBusConnectionString | b64enc }}
+  service-bus-image-queue-connection-string: {{ .Values.serviceBusImageQueueConnectionString | b64enc }}
 ---
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
@@ -76,4 +81,4 @@ spec:
     metadata:
       queueName: image-actions
       messageCount: "1" # default 5
-      connectionFromEnv: imageThumbnailsStorageConnectionString
+      connectionFromEnv: serviceBusImageQueueConnectionString

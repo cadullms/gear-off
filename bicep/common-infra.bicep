@@ -52,6 +52,16 @@ resource imageActionsServiceBusQueue 'Microsoft.ServiceBus/namespaces/queues@201
     enablePartitioning: false
     enableExpress: false
   }
+  resource authorizationRule 'authorizationRules' = {
+    name: 'manage-rule'
+    properties: {
+      rights: [
+        'Manage'
+        'Send'
+        'Listen'
+      ]
+    }
+  }
 }
 
 resource imageBlobActionsEventGridTopic 'Microsoft.EventGrid/systemTopics@2021-12-01' = {
@@ -76,7 +86,7 @@ resource imageBlobActionsEventGridSubscription 'Microsoft.EventGrid/eventSubscri
     filter: {
       includedEventTypes: [
         'Microsoft.Storage.BlobCreated'
-        'Microsoft.Storage.BlobDeleted'
+//        'Microsoft.Storage.BlobDeleted'
       ]
     }
     eventDeliverySchema: 'CloudEventSchemaV1_0'
