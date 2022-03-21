@@ -1,15 +1,15 @@
 param
 (
-    $ResourceGroup="gearoff-rg",
+    $ResourceGroup="gearoff-ca-rg",
     $Location="westeurope",
-    $NamePrefix="gearoff"
+    $NamePrefix="gearoffca"
 )
 
 az group create --name $ResourceGroup --location $Location --tags purpose=demo | Out-Null
 az deployment group create `
-  --name "infra$([DateTime]::Now.Ticks)"`
+  --name "gearoff$([DateTime]::Now.Ticks)"`
   --resource-group "$ResourceGroup" `
-  --template-file $PSScriptRoot/container-apps.bicep `
+  --template-file $PSScriptRoot/gearoff-container-apps.bicep `
   --parameters `
       namePrefix="$NamePrefix" `
       | Out-Null

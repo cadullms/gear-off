@@ -13,6 +13,9 @@ output logAnalyticsCustomerId string = logAnalytics.properties.customerId
 output logAnalyticsSharedKey string = logAnalytics.listKeys().primarySharedKey
 output containerRegistryName string = containerRegistry.name
 output containerRegistryPassword string = containerRegistry.listCredentials().passwords[0].value
+output stateStorageName string = imageStorageAccount.name
+output stateStorageKey string = imageStorageAccount.listKeys().keys[0].value
+output containerRegistryId string = containerRegistry.id
 
 resource imageStorageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   name: imageStorageAccountName

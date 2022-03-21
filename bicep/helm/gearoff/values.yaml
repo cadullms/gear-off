@@ -1,0 +1,16 @@
+registry: gearoffakscr.azurecr.io
+
+api:
+  image:
+    repository: gearoff/api
+    tag: latest
+thumbnailer:
+  image:
+    repository: gearoff/thumbnailer
+    tag: latest
+
+serviceBusConnectionString: secret
+imageStorageConnectionString: secret
+stateStorage:
+  key: secret
+  name:

@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: api
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: api
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: api
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "gearoff-api"
+        dapr.io/app-port: "80"
+    spec:
+      containers:
+      - image: {{ .Values.registry }}/{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
+        name: api
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: "0.4" 
+          requests:
+            memory: 200Mi
+            cpu: "0.04" 
+        env:
+        - name: imageUploadStorageConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: api-secrets
+              key: image-thumbnails-storage-connection-string
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: api
+  name: api
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: api
+---
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: statestore
+spec:
+  type: state.azure.tablestorage
+  version: v1
+  metadata:
+  - name: tableName
+    value: apistate
+  - name: accountName
+    value: {{ .Values.stateStorage.name }}
+  - name: accountKey
+    secretKeyRef:
+      name: api-secrets
+      key: state-storage-key
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: api-secrets
+data:
+  image-thumbnails-storage-connection-string: {{ .Values.imageStorageConnectionString | b64enc }}
+  state-storage-key: {{ .Values.stateStorage.key | b64enc }}

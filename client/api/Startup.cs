@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Services;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -49,11 +51,17 @@ namespace api
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "gear-off api v1"));
-            app.UseRouting();
             app.UsePathBase("/api");
-
+            app.UseRouting();
+            
             app.UseAuthorization();
-
+            app.UseFileServer(new FileServerOptions  
+            {  
+                FileProvider = new PhysicalFileProvider(  
+                    Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles")),  
+                RequestPath = "",  
+                EnableDefaultFiles = true  
+            }) ;  
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

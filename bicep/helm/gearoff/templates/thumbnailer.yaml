@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: thumbnailer
+  name: thumbnailer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: thumbnailer
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: thumbnailer
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "gearoff-thumbnailer"
+        dapr.io/app-port: "80"
+    spec:
+      containers:
+      - image: {{ .Values.registry }}/{{ .Values.thumbnailer.image.repository }}:{{ .Values.thumbnailer.image.tag }}
+        name: thumbnailer
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: "0.4" 
+          requests:
+            memory: 200Mi
+            cpu: "0.04" 
+        env:
+        - name: imageThumbnailsStorageConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: thumbnailer-secrets
+              key: image-thumbnails-storage-connection-string
+---
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: grid-queue-message
+spec:
+  type: bindings.azure.servicebusqueues
+  version: v1
+  metadata:
+  - name: queueName
+    value: image-actions
+  - name: ttlInSeconds
+    value: 60
+  - name: connectionString
+    secretKeyRef:
+      name: thumbnailer-secrets
+      key: service-bus-connection-string
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: thumbnailer-secrets
+data:
+  image-thumbnails-storage-connection-string: {{ .Values.imageStorageConnectionString | b64enc }}
+  service-bus-connection-string: {{ .Values.serviceBusConnectionString | b64enc }}
