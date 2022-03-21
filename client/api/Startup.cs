@@ -30,6 +30,16 @@ namespace api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IImageUploader, BlobStoreImageUploader>();
+            var isDaprEnabled = Configuration.GetValue<bool>("DAPR_ENABLED", true);
+            if (isDaprEnabled)
+            {
+                services.AddSingleton<IProfileRepository, DaprStateProfileRepository>();
+            }
+            else
+            {
+                services.AddSingleton<IProfileRepository, TableStorageProfileRepository>();
+            }
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Services;
-using Dapr.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -19,32 +18,26 @@ namespace api.Controllers
         private readonly ILogger<ProfileController> _logger;
         private readonly IConfiguration _configuration;
         private readonly IImageUploader _imageUploader;
+        private readonly IProfileRepository _profileRepository;
 
-        private const string DAPR_STORE_NAME = "statestore";
-
-        public ProfileController(ILogger<ProfileController> logger, IConfiguration configuration, IImageUploader imageUploader)
+        public ProfileController(ILogger<ProfileController> logger, IConfiguration configuration, IImageUploader imageUploader, IProfileRepository profileRepository)
         {
             _logger = logger;
             _configuration = configuration;
             _imageUploader = imageUploader;
+            _profileRepository = profileRepository;
         }
 
         [HttpGet("{id}")]
         public async Task<Profile> Get(int id)
         {
-            using var client = new DaprClientBuilder().Build();
-            Profile profile = null;
-            profile = await client.GetStateAsync<Profile>(DAPR_STORE_NAME, id.ToString());
-            return profile;
+            return await _profileRepository.Get(id);
         }
 
         [HttpPut("{id}")]
         public async Task<Profile> Put(int id, Profile profile)
         {
-            profile.Id = id;
-            using var client = new DaprClientBuilder().Build();
-            await client.SaveStateAsync<Profile>(DAPR_STORE_NAME, id.ToString(), profile);
-            return profile;
+            return await _profileRepository.Put(id, profile);
         }
 
         [HttpPut("{id}/image")]
@@ -72,12 +65,12 @@ namespace api.Controllers
             if (imageUrl != null)
             {
                 _logger.LogInformation($"Successfully processed image {filePath} to {imageUrl}.");
-                Profile profile = Get(id).Result;
+                Profile profile = _profileRepository.Get(id).Result;
                 if (profile != null)
                 {
                     profile.ImageUrl = imageUrl;
                 }
-                Put(id, profile).Wait();
+                _profileRepository.Put(id, profile).Wait();
                 return Ok();
             }
             else
