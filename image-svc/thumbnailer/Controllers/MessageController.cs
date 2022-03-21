@@ -67,12 +67,5 @@ namespace thumbnailer.Controllers
                 await blobClientUp.UploadAsync(resizedStream, true);   
             }
         }
-
-
-        // # TODO: az cli script to create storage account and grid subsription like so:
-        // https://medium.com/polarsquad/building-an-event-driven-net-core-app-with-dapr-58cc83ab120b
-        // https://docs.microsoft.com/en-us/azure/event-grid/custom-event-to-queue-storage#subscribe-to-a-custom-topic
-        // https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-event-quickstart?toc=%2Fazure%2Fevent-grid%2Ftoc.json#subscribe-to-your-storage-account
-        // https://docs.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?tabs=bicep   
-    }
+     }
 }
