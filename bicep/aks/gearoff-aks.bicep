@@ -1,7 +1,7 @@
 param location string = resourceGroup().location
 param namePrefix string = 'gearoffaks'
 
-module commonInfra 'common-infra.bicep' = {
+module commonInfra '../common-infra.bicep' = {
   name: 'common-infra'
   params: {
     location: location
