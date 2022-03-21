@@ -12,3 +12,53 @@ module commonInfra '../common-infra.bicep' = {
   }
   // TODO: App Insights in common infra
 }
+
+resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
+  name: '${namePrefix}plan'
+  location: location
+  sku: {
+    name: 'S1'
+  }
+  kind: 'linux'
+  properties: {
+    reserved: true
+  }
+}
+
+resource appServiceApp 'Microsoft.Web/sites@2021-03-01' = {
+  name: '${namePrefix}app'
+  location: location
+  kind: 'app,linux,container'
+  properties: {
+    serverFarmId: appServicePlan.id
+    siteConfig: {
+      appSettings: [
+        {
+          name: 'DOCKER_REGISTRY_SERVER_URL'
+          value: registryHostname
+        }
+        {
+          name: 'DOCKER_REGISTRY_SERVER_USERNAME'
+          value: commonInfra.outputs.containerRegistryName
+        }
+        {
+          name: 'DOCKER_REGISTRY_SERVER_PASSWORD'
+          value: commonInfra.outputs.containerRegistryPassword
+        }
+        {
+          name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
+          value: 'false'
+        }
+        {
+          name: 'DAPR_ENABLED'
+          value: 'false'
+        }
+        {
+          name: 'imageUploadStorageConnectionString'
+          value: commonInfra.outputs.imageBlobConnectionString
+        }
+      ]
+      linuxFxVersion: 'DOCKER|${apiImageName}'
+    }
+  }
+}
