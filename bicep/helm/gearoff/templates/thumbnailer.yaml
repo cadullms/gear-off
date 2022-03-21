@@ -60,3 +60,20 @@ metadata:
 data:
   image-thumbnails-storage-connection-string: {{ .Values.imageStorageConnectionString | b64enc }}
   service-bus-connection-string: {{ .Values.serviceBusConnectionString | b64enc }}
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: azure-servicebus-queue-scaledobject
+spec:
+  minReplicaCount: 0
+  maxReplicaCount: 15
+  scaleTargetRef:
+    kind: Deployment
+    name: thumbnailer
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      queueName: image-actions
+      messageCount: "1" # default 5
+      connectionFromEnv: imageThumbnailsStorageConnectionString
