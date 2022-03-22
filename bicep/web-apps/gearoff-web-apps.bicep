@@ -25,7 +25,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   }
 }
 
-resource appServiceApp 'Microsoft.Web/sites@2021-03-01' = {
+resource apiApp 'Microsoft.Web/sites@2021-03-01' = {
   name: '${namePrefix}app'
   location: location
   kind: 'app,linux,container'
@@ -59,6 +59,69 @@ resource appServiceApp 'Microsoft.Web/sites@2021-03-01' = {
         }
       ]
       linuxFxVersion: 'DOCKER|${apiImageName}'
+    }
+  }
+}
+
+resource functionStorageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
+  name: '${namePrefix}fstor'
+  location: location
+  kind: 'StorageV2'
+  sku: {
+    name: 'Standard_LRS'
+  }
+}
+
+resource consumptionPlan 'Microsoft.Web/serverfarms@2020-10-01' = {
+  name: '${namePrefix}fplan'
+  location: location
+  sku: {
+    name: 'Y1'
+    tier: 'Dynamic'
+  }
+}
+
+resource thumbNailerFunction 'Microsoft.Web/sites@2021-03-01' = {
+  name: '${namePrefix}thumbnailer'
+  location: location
+  kind: 'functionapp'
+  properties: {
+    serverFarmId: consumptionPlan.id
+    siteConfig: {
+      appSettings: [
+        {
+          'name': 'APPINSIGHTS_INSTRUMENTATIONKEY'
+          'value': commonInfra.outputs.applicationInsightsKey
+        }
+        {
+          name: 'AzureWebJobsStorage'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${functionStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionStorageAccount.listKeys().keys[0].value}'
+        }
+        {
+          'name': 'FUNCTIONS_EXTENSION_VERSION'
+          'value': '~3'
+        }
+        {
+          'name': 'FUNCTIONS_WORKER_RUNTIME'
+          'value': 'dotnet-isolated'
+        }
+        {
+          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${functionStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionStorageAccount.listKeys().keys[0].value}'
+        }
+        {
+          name: 'WEBSITE_RUN_FROM_PACKAGE'
+          value: '1'
+        }
+        {
+          name: 'gearoffwasb_SERVICEBUS' //TODO: Make this key vault references
+          value: commonInfra.outputs.serviceBusConnectionString
+        }
+        {
+          name: 'imageThumbnailsStorageConnectionString' //TODO: Make this key vault references
+          value: commonInfra.outputs.imageBlobConnectionString
+        }
+      ]
     }
   }
 }

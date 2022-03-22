@@ -16,6 +16,7 @@ output containerRegistryPassword string = containerRegistry.listCredentials().pa
 output stateStorageName string = imageStorageAccount.name
 output stateStorageKey string = imageStorageAccount.listKeys().keys[0].value
 output containerRegistryId string = containerRegistry.id
+output applicationInsightsKey string = appInsights.properties.InstrumentationKey
 
 resource imageStorageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   name: imageStorageAccountName
@@ -102,6 +103,17 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
     }
   }
 }
+
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: '${namePrefix}ai'
+  location: location
+  kind: 'web'
+  properties:{
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalytics.id
+  }
+}
+
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2019-05-01' = {
   name: containerRegistryName
