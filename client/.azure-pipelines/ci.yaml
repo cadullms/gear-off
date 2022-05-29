@@ -1,8 +1,14 @@
+variables:
+- group: common
+
+pool:
+  vmImage: ubuntu-latest
+
 steps:
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'cadull-internal-consumption(9fe738f4-de59-4073-a7ac-c66fdef4fffa)'
+    azureSubscription: '$(ServiceConnectionName)'
     scriptType: 'pscore'
     scriptLocation: 'scriptPath'
     scriptPath: 'scripts/build-and-push.ps1'
-    arguments: '-registryName gearoff -repositoryName client -tagName $(Build.BuildId)'
+    arguments: '-registryName gearoff -repositoryName client -tagName $(Build.BuildId) -buildContextPath $(Build.SourcesDirectory)/client'
