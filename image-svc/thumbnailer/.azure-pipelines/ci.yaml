@@ -1,0 +1,19 @@
+trigger:
+  paths:
+    include:
+    - image-svc/thumbnailer
+
+variables:
+- group: common
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: '$(ServiceConnectionName)'
+    scriptType: 'pscore'
+    scriptLocation: 'scriptPath'
+    scriptPath: 'scripts/build-and-push.ps1'
+    arguments: '-registryName gearoffcr -repositoryName image-svc/thumbnailer -tagName $(Build.BuildId) -buildContextPath $(Build.SourcesDirectory)/image-svc/thumbnailer'
