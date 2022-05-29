@@ -1,7 +1,9 @@
 steps:
+variables:
+- group: common
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'cadull-internal-consumption(9fe738f4-de59-4073-a7ac-c66fdef4fffa)'
+    azureSubscription: '$(ServiceConnectionName)'
     scriptType: 'pscore'
     scriptLocation: 'scriptPath'
     scriptPath: 'infra/deploy-common-infra.ps1'
