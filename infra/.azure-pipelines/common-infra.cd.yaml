@@ -1,6 +1,11 @@
-steps:
+
 variables:
 - group: common
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: '$(ServiceConnectionName)'
