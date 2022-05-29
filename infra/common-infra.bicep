@@ -44,5 +44,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
       family: 'A'
       name: 'standard'
     }
+    accessPolicies: []
   }
 }
