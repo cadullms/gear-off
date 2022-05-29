@@ -16,4 +16,4 @@ steps:
     scriptType: 'pscore'
     scriptLocation: 'scriptPath'
     scriptPath: 'scripts/build-and-push.ps1'
-    arguments: '-registryName gearoff -repositoryName client -tagName $(Build.BuildId) -buildContextPath $(Build.SourcesDirectory)/client'
+    arguments: '-registryName gearoffcr -repositoryName client -tagName $(Build.BuildId) -buildContextPath $(Build.SourcesDirectory)/client'
