@@ -1,5 +1,5 @@
 # Build the vue app
-FROM node:lts-alpine AS vue-builder
+FROM mcr.microsoft.com/cbl-mariner/base/nodejs:16 AS vue-builder
 WORKDIR /usr/src/app
 COPY vue/babel.config.js ./
 COPY vue/jsconfig.json ./
