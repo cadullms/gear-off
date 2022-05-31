@@ -9,7 +9,7 @@ az group create --name $ResourceGroup --location $Location --tags purpose=demo |
 az deployment group create `
   --name "gearoff$([DateTime]::Now.Ticks)"`
   --resource-group "$ResourceGroup" `
-  --template-file $PSScriptRoot/gearoff-web-apps.bicep `
+  --template-file $PSScriptRoot/infra.bicep `
   --parameters `
       namePrefix="$NamePrefix" `
       | Out-Null
