@@ -2,11 +2,11 @@ registry: gearoffakscr.azurecr.io
 
 api:
   image:
-    repository: gearoff/api
+    repository: client
     tag: latest
 thumbnailer:
   image:
-    repository: gearoff/thumbnailer
+    repository: image-svc/thumbnailer
     tag: latest
 
 serviceBusConnectionString: secret

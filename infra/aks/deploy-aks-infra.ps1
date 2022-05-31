@@ -1,22 +1,21 @@
 param
 (
-    $ResourceGroup="gearoffaks-rg",
-    $Location="westeurope",
-    $NamePrefix="gearoffaks"
+    $ResourceGroup = "gearoffaks-rg",
+    $Location = "westeurope",
+    $NamePrefix = "gearoffaks",
+    $acrName = "gearoffcr"
 )
 
 az group create --name $ResourceGroup --location $Location --tags purpose=demo | Out-Null
 az deployment group create `
-  --name "gearoffaks$([DateTime]::Now.Ticks)"`
-  --resource-group "$ResourceGroup" `
-  --template-file $PSScriptRoot/gearoff-aks.bicep `
-  --parameters `
-      namePrefix="$NamePrefix" `
-      | Out-Null
+    --name "gearoffaks$([DateTime]::Now.Ticks)"`
+    --resource-group "$ResourceGroup" `
+    --template-file $PSScriptRoot/infra.bicep `
+    --parameters `
+        namePrefix="$NamePrefix" `
+| Out-Null
 
-$acrName = "${NamePrefix}cr"
 az aks update -g $ResourceGroup -n $NamePrefix --attach-acr $acrName
-
 az aks get-credentials -g $ResourceGroup -n $NamePrefix
 
 helm repo add kedacore https://kedacore.github.io/charts

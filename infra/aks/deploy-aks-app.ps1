@@ -2,12 +2,11 @@ param
 (
     $ResourceGroup="gearoffaks-rg",
     $Location="westeurope",
-    $NamePrefix="gearoffaks"
+    $NamePrefix="gearoffaks",
+    $acrName = "gearoffcr",
+    $storName = "${NamePrefix}img",
+    $sbNamespaceName = "${NamePrefix}sb"
 )
-
-$acrName = "${NamePrefix}cr"
-$storName = "${NamePrefix}img"
-$sbNamespaceName = "${NamePrefix}sb"
 
 az aks get-credentials -g $ResourceGroup -n $NamePrefix
 
