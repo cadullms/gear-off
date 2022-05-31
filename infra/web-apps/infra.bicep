@@ -9,7 +9,6 @@ param containerRegistryName string = 'gearoffcr'
 param containerRegistryResourceGroupName string = 'gearoffcommon-rg'
 param registryHostname string = '${containerRegistryName}.azurecr.io'
 param apiImageName string = '${registryHostname}/client:latest'
-param thumbnailerImageName string = '${registryHostname}/image-svc/thumbnailer:latest'
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-12-01-preview' existing = {
   name: containerRegistryName
