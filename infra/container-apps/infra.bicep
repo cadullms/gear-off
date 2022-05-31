@@ -1,7 +1,7 @@
 param location string = resourceGroup().location
 param namePrefix string = 'gearoffca'
 param serviceBusNamespaceName string = '${namePrefix}sb'
-param imageStorageAccountName string = '${namePrefix}img'
+param appStorageAccountName string = '${namePrefix}img'
 param serviceBusBlobActionsQueueName string = 'image-actions'
 param logAnalyticsName string = '${namePrefix}la'
 param appInsightsName string = '${namePrefix}ai'
@@ -184,7 +184,7 @@ resource gridQueueMessageComponent 'Microsoft.App/managedEnvironments/daprCompon
       }
       {
         name: 'queueName'
-        value: 'image-actions'
+        value: serviceBusBlobActionsQueueName
       }
     ]
     secrets: [
@@ -192,6 +192,10 @@ resource gridQueueMessageComponent 'Microsoft.App/managedEnvironments/daprCompon
         name: 'service-bus-connection-string'
         value: serviceBusConnectionString
       }
+    ]
+    scopes: [
+      'gearoff-api'
+      'gearoff-thumbnailer'
     ]
   }
 }
@@ -212,7 +216,7 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' 
 }
 
 resource appStorageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
-  name: imageStorageAccountName
+  name: appStorageAccountName
   location: location
   kind: 'StorageV2'
   sku: {
