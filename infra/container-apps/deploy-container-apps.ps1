@@ -2,7 +2,7 @@ param
 (
     $ResourceGroup = "gearoffca-rg",
     $Location = "westeurope",
-    $NamePrefix = "gearoffca"
+    $NamePrefix = "gearoffaca"
 )
 
 az group create --name $ResourceGroup --location $Location --tags purpose=demo | Out-Null

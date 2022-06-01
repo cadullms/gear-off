@@ -151,7 +151,7 @@ resource stateStoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2
       }
       {
         name: 'tableName'
-        value: 'api-state'
+        value: 'apistate'
       }
     ]
     secrets: [
@@ -162,7 +162,6 @@ resource stateStoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2
     ]
     scopes: [
       'gearoff-api'
-      'gearoff-thumbnailer'
     ]
   }
 }
@@ -172,6 +171,8 @@ resource gridQueueMessageComponent 'Microsoft.App/managedEnvironments/daprCompon
   parent: containerAppEnvironment
   properties: {
     componentType: 'bindings.azure.storagequeues'
+    ignoreErrors: true
+    initTimeout: '30s'
     version: 'v1'
     metadata: [
       {
@@ -194,7 +195,6 @@ resource gridQueueMessageComponent 'Microsoft.App/managedEnvironments/daprCompon
       }
     ]
     scopes: [
-      'gearoff-api'
       'gearoff-thumbnailer'
     ]
   }
