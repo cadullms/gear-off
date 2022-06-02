@@ -130,6 +130,8 @@ resource thumbNailerFunction 'Microsoft.Web/sites@2021-03-01' = {
   }
 }
 
+var appStorageAccountKey = appStorageAccount.listKeys().keys[0].value
+var appBlobConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${appStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${appStorageAccountKey}'
 resource appStorageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   name: appStorageAccountName
   location: location
@@ -139,8 +141,6 @@ resource appStorageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   }
 }
 
-var appStorageAccountKey = appStorageAccount.listKeys().keys[0].value
-var appBlobConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${appStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${appStorageAccountKey}'
 var serviceBusConnectionString = 'Endpoint=sb://${gearoffServiceBusNamespace.name}.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=${listKeys(serviceBusListKeysEndpoint, '2021-06-01-preview').primaryKey}'
 var serviceBusListKeysEndpoint = '${gearoffServiceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey'
 resource gearoffServiceBusNamespace 'Microsoft.ServiceBus/namespaces@2021-11-01' = {

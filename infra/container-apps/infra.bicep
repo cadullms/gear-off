@@ -172,7 +172,7 @@ resource gridQueueMessageComponent 'Microsoft.App/managedEnvironments/daprCompon
   properties: {
     componentType: 'bindings.azure.storagequeues'
     ignoreErrors: false
-    initTimeout: '30s'
+    initTimeout: '5s'
     version: 'v1'
     metadata: [
       {
