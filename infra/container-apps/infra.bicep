@@ -170,7 +170,7 @@ resource gridQueueMessageComponent 'Microsoft.App/managedEnvironments/daprCompon
   name: 'grid-queue-message'
   parent: containerAppEnvironment
   properties: {
-    componentType: 'bindings.azure.storagequeues'
+    componentType: 'bindings.azure.servicebusqueues'
     ignoreErrors: false
     initTimeout: '5s'
     version: 'v1'
